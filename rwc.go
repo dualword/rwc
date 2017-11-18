@@ -134,7 +134,7 @@ func (c *constructor) WordMask(mask string) string {
 func inc(b, how byte) byte {
 	switch how {
 	case '.':
-		return byte((b + 1) % 32)
+		return (b + 1) % 32
 	case 'V':
 		return incv[b]
 	case 'C':
