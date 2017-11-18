@@ -36,11 +36,11 @@ func Word(n int) string {
 }
 
 // WordMask returns a pseudo-Russian word matching the mask.
-// The mask may contain lowercase letters from 'а' to 'я' (exclusing 'ё')
+// The mask may contain lowercase letters from 'а' to 'я' (excluding 'ё')
 // and the following special symbols:
 // V - for a vowel;
 // C - for a consonant;
-// . - for any letter.
+// . (dot) - for any letter.
 func WordMask(mask string) string {
 	return constr.WordMask(mask)
 }
