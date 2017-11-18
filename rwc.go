@@ -30,9 +30,9 @@ type constructor struct {
 	ng1    uint32
 }
 
-// Word returns a pseudo-Russian word of length n.
-func Word(n int) string {
-	return constr.Word(n)
+// Word returns a pseudo-Russian word of the specified length.
+func Word(length int) string {
+	return constr.Word(length)
 }
 
 // WordMask returns a pseudo-Russian word matching the mask.
