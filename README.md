@@ -23,5 +23,5 @@ func main() {
 
 ## See also
 
-http://kirsanov.com/rwc/
+http://kirsanov.com/rwc/ ([Eng](http://www.kirsanov.com/rwc/english.html))
 
