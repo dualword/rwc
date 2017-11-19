@@ -21,7 +21,8 @@ var (
 	incc       = [32]byte{0, 3, 1, 4, 6, 0, 7, 9, 0, 10, 11, 12, 13, 15, 0, 16, 17, 18, 20, 0, 21, 22, 23, 24, 25, 2, 0, 0, 0, 0, 0, 0}
 )
 
-type constructor struct {
+// Constructor is a pseudo-Russian word constructor.
+type Constructor struct {
 	ng4    [32768]uint32
 	ng3    [1024]uint32
 	ng3beg [1024]uint32
@@ -32,7 +33,7 @@ type constructor struct {
 
 // Word returns a pseudo-Russian word of the specified length.
 func Word(length int) string {
-	return constr.Word(length)
+	return DefaultConstructor.Word(length)
 }
 
 // WordMask returns a pseudo-Russian word matching the mask.
@@ -42,10 +43,15 @@ func Word(length int) string {
 // C - for a consonant;
 // . (dot) - for any letter.
 func WordMask(mask string) string {
-	return constr.WordMask(mask)
+	return DefaultConstructor.WordMask(mask)
 }
 
-func (c *constructor) Word(n int) string {
+// Word returns a pseudo-Russian word of the specified length.
+func (c *Constructor) Word(n int) string {
+	if n <= 0 {
+		return ""
+	}
+
 	w := make([]byte, n)
 	for i := 0; i < len(w); i++ {
 		w[i] = byte(randA.Rand())
@@ -53,29 +59,36 @@ func (c *constructor) Word(n int) string {
 	orig := make([]byte, n)
 	copy(orig, w)
 
-	i := 0
-	for {
+	for i := 0; i < n; {
 		if c.check(w, i) {
 			i++
-			if i >= n {
-				break
+			continue
+		}
+
+		w[i] = (w[i] + 1) % 32
+		for i >= 0 && w[i] == orig[i] {
+			if i == 0 {
+				return ""
 			}
-		} else {
+			i--
 			w[i] = (w[i] + 1) % 32
-			for i >= 0 && w[i] == orig[i] {
-				if i == 0 {
-					return ""
-				}
-				i--
-				w[i] = (w[i] + 1) % 32
-			}
 		}
 	}
 
 	return makeString(w)
 }
 
-func (c *constructor) WordMask(mask string) string {
+// WordMask returns a pseudo-Russian word matching the mask.
+// The mask may contain lowercase letters from 'а' to 'я' (excluding 'ё')
+// and the following special symbols:
+// V - for a vowel;
+// C - for a consonant;
+// . (dot) - for any letter.
+func (c *Constructor) WordMask(mask string) string {
+	if mask == "" {
+		return ""
+	}
+
 	var bmask []byte
 	for _, r := range mask {
 		switch {
@@ -109,22 +122,19 @@ func (c *constructor) WordMask(mask string) string {
 	orig := make([]byte, n)
 	copy(orig, w)
 
-	i := 0
-	for {
+	for i := 0; i < n; {
 		if c.check(w, i) {
 			i++
-			if i >= n {
-				break
+			continue
+		}
+
+		w[i] = inc(w[i], bmask[i])
+		for i > 0 && w[i] == orig[i] {
+			if i == 0 {
+				return ""
 			}
-		} else {
+			i--
 			w[i] = inc(w[i], bmask[i])
-			for i >= 0 && w[i] == orig[i] {
-				if i == 0 {
-					return ""
-				}
-				i--
-				w[i] = inc(w[i], bmask[i])
-			}
 		}
 	}
 
@@ -152,7 +162,7 @@ func makeString(w []byte) string {
 	return string(rr)
 }
 
-func (c *constructor) check(w []byte, i int) bool {
+func (c *Constructor) check(w []byte, i int) bool {
 	good := true
 	n := len(w)
 	switch {
