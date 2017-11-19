@@ -129,7 +129,7 @@ func (c *Constructor) WordMask(mask string) string {
 		}
 
 		w[i] = inc(w[i], bmask[i])
-		for i > 0 && w[i] == orig[i] {
+		for i >= 0 && w[i] == orig[i] {
 			if i == 0 {
 				return ""
 			}
