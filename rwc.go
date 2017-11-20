@@ -184,6 +184,11 @@ func (c *Constructor) check(w []byte, i int) bool {
 	case i == n-1:
 		index := uint16(w[n-3])<<5 + uint16(w[n-2])
 		good = c.ng3end[index]&(1<<w[n-1]) != 0
+
+		if good {
+			index := uint16(w[n-4])<<10 + uint16(w[n-3])<<5 + uint16(w[n-2])
+			good = c.ng4[index]&(1<<w[n-1]) != 0
+		}
 	default:
 		index := uint16(w[i-3])<<10 + uint16(w[i-2])<<5 + uint16(w[i-1])
 		good = c.ng4[index]&(1<<w[i]) != 0
