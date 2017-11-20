@@ -99,7 +99,7 @@ func (c *Constructor) add(word string) {
 		i = uint16(w[n-3])<<5 + uint16(w[n-2])
 		c.ng3end[i] |= 1 << w[n-1]
 
-		for i := 1; i < len(w)-4; i++ {
+		for i := 0; i <= len(w)-4; i++ {
 			i := uint16(w[0])<<10 + uint16(w[1])<<5 + uint16(w[2])
 			c.ng4[i] |= 1 << w[3]
 		}
